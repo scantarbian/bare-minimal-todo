@@ -105,6 +105,11 @@ const Home: NextPage = ({
                     prevTasksData.filter((t) => t.id !== task.id)
                   );
                 }}
+                onUpdate={(task) => {
+                  setTasksData((prevTasksData) =>
+                    prevTasksData.map((t) => (t.id === task.id ? task : t))
+                  );
+                }}
               />
             ))}
           </div>
