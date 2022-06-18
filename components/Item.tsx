@@ -18,7 +18,7 @@ const Item = ({ className, task, onDelete }: Props) => {
 
   return (
     <div
-      className={`p-2 w-1/2 flex divide-x-2 divide-black bg-white rounded-2xl backdrop-filter backdrop-blur-xl bg-opacity-30 ${className}`}
+      className={`p-2 w-1/2 flex divide-x-2 divide-black bg-white rounded-2xl backdrop-filter backdrop-blur-xl bg-opacity-30 filter drop-shadow-lg ${className}`}
     >
       <span className="pr-2">
         <input
