@@ -12,7 +12,11 @@ export default async function handler(
       case "GET":
         const tasks = await prisma.task.findMany();
 
-        return res.status(200).json(tasks);
+        res.status(200).json({
+          tasks,
+        });
+
+        break;
       case "POST":
         const { name } = req.body;
 
@@ -22,7 +26,11 @@ export default async function handler(
           },
         });
 
-        return res.status(200).json(task);
+        res.status(201).json({
+          task,
+        });
+
+        break;
       case "PATCH":
         const { id, name: newName, completed } = req.body;
 
@@ -36,7 +44,11 @@ export default async function handler(
           },
         });
 
-        return res.status(200).json(taskToUpdate);
+        res.status(200).json({
+          taskToUpdate,
+        });
+
+        break;
       case "DELETE":
         const { id: taskId } = req.body;
 
@@ -46,7 +58,11 @@ export default async function handler(
           },
         });
 
-        return res.status(200).json(taskToDelete);
+        res.status(200).json({
+          taskToDelete,
+        });
+
+        break;
       default:
         return res.status(405).end();
     }

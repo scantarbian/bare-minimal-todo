@@ -3,6 +3,7 @@ import type {
   InferGetServerSidePropsType,
   GetServerSideProps,
 } from "next";
+import { useState, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 // lib
 import { prisma } from "../lib/prisma";
@@ -21,14 +22,18 @@ type Inputs = {
 };
 
 const Home: NextPage = ({
-  data,
+  tasks,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const [tasksData, setTasksData] = useState<TaskItem[]>([]);
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
+    reset,
   } = useForm<Inputs>();
+
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     fetch("/api/todo", {
       method: "POST",
@@ -36,8 +41,22 @@ const Home: NextPage = ({
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
+    }).then((res) => {
+      if (res.ok) {
+        reset();
+      }
+
+      res.json().then((data) => {
+        // append data.task to tasksData
+        setTasksData((prevTasksData) => [...prevTasksData, data.task]);
+      });
     });
   };
+
+  useEffect(() => {
+    const data = JSON.parse(tasks);
+    setTasksData(data);
+  }, [tasks]);
 
   return (
     <>
@@ -76,7 +95,7 @@ const Home: NextPage = ({
               </button>
             </div>
           </form>
-          {data?.tasks?.map((task: TaskItem) => (
+          {tasksData?.map((task: TaskItem) => (
             <Item key={task.id} task={task} />
           ))}
         </main>
@@ -98,7 +117,9 @@ const Home: NextPage = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const tasks = await prisma.task.findMany();
+  const data = await prisma.task.findMany();
+
+  const tasks = JSON.stringify(data);
 
   return {
     props: {
