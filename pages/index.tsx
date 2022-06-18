@@ -4,6 +4,7 @@ import type {
   GetServerSideProps,
 } from "next";
 import { useForm, SubmitHandler } from "react-hook-form";
+// lib
 import { prisma } from "../lib/prisma";
 // components
 import Head from "next/head";
@@ -28,7 +29,15 @@ const Home: NextPage = ({
     watch,
     formState: { errors },
   } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    fetch("/api/todo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+  };
 
   return (
     <>
