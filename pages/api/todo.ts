@@ -12,7 +12,7 @@ export default async function handler(
       case "GET": {
         const tasks = await prisma.task.findMany();
 
-        res.status(200).json({
+        return res.status(200).json({
           tasks,
         });
       }
