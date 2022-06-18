@@ -97,7 +97,15 @@ const Home: NextPage = ({
           </form>
           <div className="flex flex-col w-full items-center space-y-4">
             {tasksData?.map((task: TaskItem) => (
-              <Item key={task.id} task={task} />
+              <Item
+                key={task.id}
+                task={task}
+                onDelete={() => {
+                  setTasksData((prevTasksData) =>
+                    prevTasksData.filter((t) => t.id !== task.id)
+                  );
+                }}
+              />
             ))}
           </div>
         </main>

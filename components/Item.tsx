@@ -10,9 +10,10 @@ type TaskItem = {
 type Props = {
   className?: string;
   task: TaskItem;
+  onDelete: () => void;
 };
 
-const Item = ({ className, task }: Props) => {
+const Item = ({ className, task, onDelete }: Props) => {
   const [taskData, setTaskData] = useState<TaskItem>(task);
 
   return (
@@ -43,7 +44,28 @@ const Item = ({ className, task }: Props) => {
         />
       </span>
       <span className="flex-1 px-2">{task.name}</span>
-      <span className="pl-2">Control buttons</span>
+      <span className="pl-2">
+        <button
+          className="hover:font-bold text-red-500"
+          onClick={() => {
+            fetch("/api/todo", {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                id: taskData.id,
+              }),
+            }).then((res) => {
+              if (res.ok) {
+                onDelete();
+              }
+            });
+          }}
+        >
+          DELETE
+        </button>
+      </span>
     </div>
   );
 };
