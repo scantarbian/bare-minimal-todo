@@ -1,12 +1,27 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
+import type {
+  NextPage,
+  InferGetServerSidePropsType,
+  GetServerSideProps,
+} from "next";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { prisma } from "../lib/prisma";
+// components
+import Head from "next/head";
+import Item from "../components/Item";
 
-type Inputs = {
-  task: string;
+type TaskItem = {
+  id: string;
+  name: string;
+  completed: boolean;
 };
 
-const Home: NextPage = () => {
+type Inputs = {
+  name: string;
+};
+
+const Home: NextPage = ({
+  data,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const {
     register,
     handleSubmit,
@@ -38,7 +53,7 @@ const Home: NextPage = () => {
               type="text"
               placeholder="Task"
               className="rounded-2xl w-full"
-              {...register("task", { required: true })}
+              {...register("name", { required: true })}
             />
             <div className={`flex items-center space-x-10`}>
               <button
@@ -52,6 +67,9 @@ const Home: NextPage = () => {
               </button>
             </div>
           </form>
+          {data?.tasks?.map((task: TaskItem) => (
+            <Item key={task.id} task={task} />
+          ))}
         </main>
         <footer className="mt-20 w-full p-4 text-white text-center">
           <span>
@@ -70,4 +88,14 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home
+export const getServerSideProps: GetServerSideProps = async () => {
+  const tasks = await prisma.task.findMany();
+
+  return {
+    props: {
+      tasks,
+    },
+  };
+};
+
+export default Home;

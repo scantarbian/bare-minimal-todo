@@ -1,4 +1,4 @@
-import prisma from "../../lib/prisma";
+import { prisma } from "../../lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -10,13 +10,43 @@ export default async function handler(
 
     switch (method) {
       case "GET":
-        return res.status(200);
+        const tasks = await prisma.task.findMany();
+
+        return res.status(200).json(tasks);
       case "POST":
-        return res.status(200);
+        const { name } = req.body;
+
+        const task = await prisma.task.create({
+          data: {
+            name,
+          },
+        });
+
+        return res.status(200).json(task);
       case "PATCH":
-        return res.status(200);
+        const { id, name: newName, completed } = req.body;
+
+        const taskToUpdate = await prisma.task.update({
+          where: {
+            id,
+          },
+          data: {
+            name: newName,
+            completed,
+          },
+        });
+
+        return res.status(200).json(taskToUpdate);
       case "DELETE":
-        return res.status(200);
+        const { id: taskId } = req.body;
+
+        const taskToDelete = await prisma.task.delete({
+          where: {
+            id: taskId,
+          },
+        });
+
+        return res.status(200).json(taskToDelete);
       default:
         return res.status(405).end();
     }

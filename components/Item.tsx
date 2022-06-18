@@ -1,9 +1,23 @@
-type Props = {
-  className?: string;
+import { useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+type TaskItem = {
+  id: string;
+  name: string;
+  completed: boolean;
 };
 
-const Item = ({ className }: Props) => {
-  return <div className={` ${className}`}></div>;
+type Props = {
+  className?: string;
+  task: TaskItem;
+};
+
+const Item = ({ className, task }: Props) => {
+  return (
+    <div className={` ${className}`}>
+      <span>{task.name}</span>
+    </div>
+  );
 };
 
 export default Item;
