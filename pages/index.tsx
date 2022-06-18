@@ -72,7 +72,7 @@ const Home: NextPage = ({
             Minimalist To-Do List Web App w/ React and MySQL
           </span>
         </header>
-        <main className="flex flex-col items-center w-full ">
+        <main className="flex flex-col items-center w-full space-y-4">
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="p-8 flex flex-col items-center bg-white rounded-2xl backdrop-filter backdrop-blur-xl bg-opacity-30 w-1/2 space-y-4 filter drop-shadow-lg"
@@ -95,9 +95,11 @@ const Home: NextPage = ({
               </button>
             </div>
           </form>
-          {tasksData?.map((task: TaskItem) => (
-            <Item key={task.id} task={task} />
-          ))}
+          <div className="flex flex-col w-full items-center space-y-4">
+            {tasksData?.map((task: TaskItem) => (
+              <Item key={task.id} task={task} />
+            ))}
+          </div>
         </main>
         <footer className="mt-20 w-full p-4 text-white text-center">
           <span>
