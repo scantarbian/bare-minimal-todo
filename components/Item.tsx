@@ -13,11 +13,35 @@ type Props = {
 };
 
 const Item = ({ className, task }: Props) => {
+  const [taskData, setTaskData] = useState<TaskItem>(task);
+
   return (
     <div
       className={`p-2 w-1/2 flex divide-x-2 divide-black bg-white rounded-2xl backdrop-filter backdrop-blur-xl bg-opacity-30 ${className}`}
     >
-      <span className="pr-2">Checklist</span>
+      <span className="pr-2">
+        <input
+          type="checkbox"
+          className="h-7 w-7 border-2 rounded-xl"
+          checked={taskData.completed}
+          onClick={() => {
+            fetch("/api/todo", {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                id: taskData.id,
+                completed: !taskData.completed,
+              }),
+            }).then((res) => {
+              res.json().then((data) => {
+                setTaskData(data.task);
+              });
+            });
+          }}
+        />
+      </span>
       <span className="flex-1 px-2">{task.name}</span>
       <span className="pl-2">Control buttons</span>
     </div>

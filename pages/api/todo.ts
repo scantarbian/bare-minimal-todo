@@ -9,15 +9,14 @@ export default async function handler(
     const { method } = req;
 
     switch (method) {
-      case "GET":
+      case "GET": {
         const tasks = await prisma.task.findMany();
 
         res.status(200).json({
           tasks,
         });
-
-        break;
-      case "POST":
+      }
+      case "POST": {
         const { name } = req.body;
 
         const task = await prisma.task.create({
@@ -26,45 +25,43 @@ export default async function handler(
           },
         });
 
-        res.status(201).json({
+        return res.status(201).json({
           task,
         });
+      }
+      case "PATCH": {
+        const { id, name, completed } = req.body;
 
-        break;
-      case "PATCH":
-        const { id, name: newName, completed } = req.body;
-
-        const taskToUpdate = await prisma.task.update({
+        const task = await prisma.task.update({
           where: {
             id,
           },
           data: {
-            name: newName,
+            name,
             completed,
           },
         });
 
-        res.status(200).json({
-          taskToUpdate,
+        return res.status(200).json({
+          task,
         });
-
-        break;
-      case "DELETE":
+      }
+      case "DELETE": {
         const { id: taskId } = req.body;
 
-        const taskToDelete = await prisma.task.delete({
+        const task = await prisma.task.delete({
           where: {
             id: taskId,
           },
         });
 
-        res.status(200).json({
-          taskToDelete,
+        return res.status(200).json({
+          task,
         });
-
-        break;
-      default:
+      }
+      default: {
         return res.status(405).end();
+      }
     }
   } catch (error: any) {
     return res.status(500).json(error);
